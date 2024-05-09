@@ -36,11 +36,10 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.scanPanel = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.label4 = new System.Windows.Forms.Label();
+            this.lbl_appname = new System.Windows.Forms.Label();
             this.bottomPanel = new System.Windows.Forms.Panel();
             this.lbl_status = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.lbl_date = new System.Windows.Forms.Label();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel4 = new System.Windows.Forms.Panel();
@@ -117,7 +116,7 @@
             // panel3
             // 
             this.panel3.BackColor = System.Drawing.SystemColors.MenuHighlight;
-            this.panel3.Controls.Add(this.label4);
+            this.panel3.Controls.Add(this.lbl_appname);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel3.Location = new System.Drawing.Point(0, 0);
             this.panel3.Name = "panel3";
@@ -125,26 +124,24 @@
             this.panel3.TabIndex = 3;
             this.panel3.UseWaitCursor = true;
             // 
-            // label4
+            // lbl_appname
             // 
-            this.label4.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Arial Rounded MT Bold", 25.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.ForeColor = System.Drawing.Color.White;
-            this.label4.Location = new System.Drawing.Point(390, 9);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(688, 50);
-            this.label4.TabIndex = 0;
-            this.label4.Text = "BLUEGATES CUBE PHARMACY";
-            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.label4.UseWaitCursor = true;
+            this.lbl_appname.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lbl_appname.Font = new System.Drawing.Font("Arial Rounded MT Bold", 25.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_appname.ForeColor = System.Drawing.Color.White;
+            this.lbl_appname.Location = new System.Drawing.Point(0, 0);
+            this.lbl_appname.Name = "lbl_appname";
+            this.lbl_appname.Size = new System.Drawing.Size(1432, 72);
+            this.lbl_appname.TabIndex = 0;
+            this.lbl_appname.Text = "BLUEGATES CUBE PHARMACY";
+            this.lbl_appname.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lbl_appname.UseWaitCursor = true;
             // 
             // bottomPanel
             // 
             this.bottomPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(113)))), ((int)(((byte)(192)))));
             this.bottomPanel.Controls.Add(this.lbl_status);
             this.bottomPanel.Controls.Add(this.label1);
-            this.bottomPanel.Controls.Add(this.lbl_date);
             this.bottomPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.bottomPanel.Location = new System.Drawing.Point(0, 536);
             this.bottomPanel.Margin = new System.Windows.Forms.Padding(0);
@@ -156,9 +153,10 @@
             // lbl_status
             // 
             this.lbl_status.AutoSize = true;
+            this.lbl_status.Dock = System.Windows.Forms.DockStyle.Right;
             this.lbl_status.Font = new System.Drawing.Font("Arial Rounded MT Bold", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_status.ForeColor = System.Drawing.SystemColors.Control;
-            this.lbl_status.Location = new System.Drawing.Point(998, 1);
+            this.lbl_status.Location = new System.Drawing.Point(1285, 0);
             this.lbl_status.Name = "lbl_status";
             this.lbl_status.Size = new System.Drawing.Size(147, 20);
             this.lbl_status.TabIndex = 54;
@@ -177,19 +175,6 @@
             this.label1.TabIndex = 53;
             this.label1.Text = "BLUEGATES CUBE";
             this.label1.UseWaitCursor = true;
-            // 
-            // lbl_date
-            // 
-            this.lbl_date.AutoSize = true;
-            this.lbl_date.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lbl_date.Font = new System.Drawing.Font("Arial Rounded MT Bold", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbl_date.ForeColor = System.Drawing.Color.White;
-            this.lbl_date.Location = new System.Drawing.Point(1143, 0);
-            this.lbl_date.Name = "lbl_date";
-            this.lbl_date.Size = new System.Drawing.Size(289, 20);
-            this.lbl_date.TabIndex = 52;
-            this.lbl_date.Text = "As of OO/OO/OOOO OO:OO:OO PM";
-            this.lbl_date.UseWaitCursor = true;
             // 
             // pictureBox3
             // 
@@ -266,6 +251,7 @@
             this.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.ClientSize = new System.Drawing.Size(1432, 1055);
             this.Controls.Add(this.panel1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.KeyPreview = true;
             this.Name = "mainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -274,7 +260,6 @@
             this.scanPanel.ResumeLayout(false);
             this.scanPanel.PerformLayout();
             this.panel3.ResumeLayout(false);
-            this.panel3.PerformLayout();
             this.bottomPanel.ResumeLayout(false);
             this.bottomPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
@@ -298,11 +283,10 @@
         private System.Windows.Forms.Panel panel4;
         private AxWMPLib.AxWindowsMediaPlayer axWindowsMediaPlayer1;
         private System.Windows.Forms.Panel bottomPanel;
-        private System.Windows.Forms.Label lbl_date;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label lbl_status;
         private System.Windows.Forms.Panel panel3;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label lbl_appname;
     }
 }

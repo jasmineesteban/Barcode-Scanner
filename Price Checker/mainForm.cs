@@ -17,10 +17,8 @@ namespace Price_Checker
         private readonly FontManagerService fontManager;
         private readonly VideoManagerService videoManager;
         private readonly DataRetrievalService dataRetrievalService;
-        private string connstring;
+        private readonly string connstring;
         private DatabaseConfig _config;
-
-       
 
         public mainForm()
         {
@@ -28,16 +26,14 @@ namespace Price_Checker
             lbl_barcode.KeyDown += Lbl_barcode_KeyDown;
             KeyPreview = true;
             this.Shown += MainForm_Shown;
-            //lbl_barcode.Focus();
 
 
             timer1.Start();
             timer1.Interval = 1000; // 1000 milliseconds = 1 second
             timer1.Tick += timer1_Tick;
 
-            // Update the label with the current date and time
-            lbl_date.Text = DateTime.Now.ToString();
             UpdateStatusLabel(lbl_status);
+            Appname(lbl_appname);
 
 
             scanBarcodeService = new ScanBarcodeService();
@@ -66,7 +62,6 @@ namespace Price_Checker
 
             dataRetrievalService = new DataRetrievalService(databaseConfig);
             dataRetrievalService.SetInterval(5, DataRetrievalService.TimeUnit.Seconds);
-
         }
         private void MainForm_Shown(object sender, EventArgs e)
         {
@@ -74,38 +69,47 @@ namespace Price_Checker
             lbl_barcode.Focus();
         }
 
+        private DateTime lastOnlineTime = DateTime.MinValue;
+        private bool wasOnlinePreviously = false; 
 
         private void UpdateStatusLabel(Label lbl_status)
         {
+            _config = new DatabaseConfig();
+            string connstring = $"server={_config.Server};port={_config.Port};uid={_config.Uid};pwd={_config.Pwd};database={_config.Database}";
             string status = "Server Offline"; // Default status
 
             try
             {
                 using (MySqlConnection con = new MySqlConnection(connstring))
                 {
-                    con.Open();
+                   con.Open();
+                   string sql = "SELECT set_status FROM settings";
+                   MySqlCommand cmd = new MySqlCommand(sql, con);
+                   MySqlDataReader reader = cmd.ExecuteReader();
 
-                    // Check if the connection is open
-                    if (con.State == ConnectionState.Open)
-                    {
-                        string sql = "SELECT set_status FROM settings";
-                        MySqlCommand cmd = new MySqlCommand(sql, con);
-
-                        // Execute the query and get the result
-                        object result = cmd.ExecuteScalar();
-
-                        // Check if the result is not null and is of integer type
-                        if (result != null && result is int statusValue)
-                        {
-                            status = statusValue == 1 ? "Server Online" : "Server Offline";
-                        }
-                    }
-                    else
-                    {
-                        // Connection failed to open
-                        status = "Failed to connect to the database.";
-                    }
+                     if (reader.Read())
+                     {
+                         int statusValue = reader.GetInt32(0);
+                         if (statusValue == 1)
+                         {
+                             lastOnlineTime = DateTime.Now;
+                             wasOnlinePreviously = true;
+                             status = "Server Online";
+                         }
+                         else
+                         {
+                             if (wasOnlinePreviously)
+                             {
+                                status = "Server Offline";
+                             }
+                             else
+                             {
+                                status = "Server Offline";
+                             }
+                         }
+                     }
                 }
+               
             }
             catch (MySqlException ex)
             {
@@ -114,9 +118,8 @@ namespace Price_Checker
                 MessageBox.Show(status);
             }
 
-            lbl_status.Text = status;
+            lbl_status.Text = $"{status} as of {(status == "Server Offline" ? lastOnlineTime.ToString() : DateTime.Now.ToString())}";
         }
-
 
         private void Lbl_barcode_KeyDown(object sender, KeyEventArgs e)
         {
@@ -129,9 +132,33 @@ namespace Price_Checker
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            // Update the label with the current date and time
-            lbl_date.Text =  DateTime.Now.ToString();
+            UpdateStatusLabel(lbl_status);
         }
 
+        private void Appname(Label lbl_appname)
+        {
+            _config = new DatabaseConfig();
+            string connstring = $"server={_config.Server};port={_config.Port};uid={_config.Uid};pwd={_config.Pwd};database={_config.Database}";
+            using (MySqlConnection con = new MySqlConnection(connstring))
+            {
+                con.Open();
+                string sql = "SELECT set_appname FROM settings";
+                MySqlCommand cmd = new MySqlCommand(sql, con);
+                MySqlDataReader reader = cmd.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    string appName = reader.GetString(0);
+
+                    reader.Close();
+
+                    lbl_appname.Text = appName;
+                }
+                else
+                {
+                    lbl_appname.Text = "No app name found";
+                }
+            }
+        }
     }
 }

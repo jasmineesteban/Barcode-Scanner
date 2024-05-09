@@ -10,6 +10,10 @@ namespace Price_Checker.Services
         private readonly string connstring;
         private DatabaseConfig _config;
 
+        //
+        private Timer timer = new Timer();
+        private int intervalInSeconds = 0;
+
 
         private Form formInstance;
 
@@ -18,10 +22,14 @@ namespace Price_Checker.Services
             _config = new DatabaseConfig();
             connstring = $"server={_config.Server};port={_config.Port};uid={_config.Uid};pwd={_config.Pwd};database={_config.Database}";
             formInstance = form;
+
+            timer.Tick += Timer_Tick;
+            SetTimerInterval();
+            timer.Start();
         }
 
 
-        public void HandleProductDetails(string barcode, Label lbl_name, Label lbl_price, Label lbl_manufacturer, Label lbl_uom, Label lbl_generic)
+        public void HandleProductDetails(string barcode, Label lbl_name, Label lbl_price, Label lbl_manufacturer, Label lbl_uom, Label lbl_generic, Label lbl_vendor)
         {
             List<Product> products = GetProductDetails(barcode);
 
@@ -32,6 +40,7 @@ namespace Price_Checker.Services
                 lbl_manufacturer.Text = products[0].Manufacturer;
                 lbl_uom.Text = products[0].UOM;
                 lbl_generic.Text = products[0].Generic;
+                lbl_vendor.Text = products[0].Vendor;
             }
             else if (products.Count > 1)
             {
@@ -47,6 +56,7 @@ namespace Price_Checker.Services
                         lbl_manufacturer.Text = chooseProductForm.SelectedProduct.Manufacturer;
                         lbl_uom.Text = chooseProductForm.SelectedProduct.UOM;
                         lbl_generic.Text = chooseProductForm.SelectedProduct.Generic;
+                        lbl_vendor.Text = chooseProductForm.SelectedProduct.Vendor;
                     }
                     else
                     {
@@ -55,6 +65,7 @@ namespace Price_Checker.Services
                         lbl_manufacturer.Text = "N/A";
                         lbl_uom.Text = "N/A";
                         lbl_generic.Text = "N/A";
+                        lbl_vendor.Text = "N/A";
 
                     }
                 }
@@ -64,16 +75,35 @@ namespace Price_Checker.Services
                 MessageBox.Show("Product Not Found");
             }
 
-            // Timer logic
-            Timer timer = new Timer();
-            timer.Interval = 3000; // Form interval to 3 seconds
-            timer.Tick += Timer_Tick;
-            timer.Start();
+            //// Timer logic
+            //Timer timer = new Timer();
+            //timer.Interval = 5000; // Form interval to 3 seconds
+            //timer.Tick += Timer_Tick;
+            //timer.Start();
+        }
+
+        private void SetTimerInterval()
+        {
+            using (MySqlConnection con = new MySqlConnection(connstring))
+            {
+                con.Open();
+                string sql = "SELECT set_disptime FROM settings";
+                MySqlCommand cmd = new MySqlCommand(sql, con);
+                using (MySqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        intervalInSeconds = reader.GetInt32(0);
+                        timer.Interval = intervalInSeconds * 1000; // Multiply by 1000 to convert to milliseconds
+                    }
+                }
+            }
         }
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-           formInstance.Close();
+            formInstance.Close();
+            timer.Stop(); // Stop the timer once form is closed
         }
 
         public List<Product> GetProductDetails(string barcode)
@@ -98,6 +128,7 @@ namespace Price_Checker.Services
                         product.Manufacturer = reader["prod_pincipal"].ToString();
                         product.UOM = "per " + reader["prod_uom"].ToString();
                         product.Generic = reader["prod_generic"].ToString();
+                        product.Vendor = reader["prod_vendor"].ToString();
                         products.Add(product);
                     }
                 }

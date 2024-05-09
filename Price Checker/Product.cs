@@ -7,6 +7,7 @@
         public string UOM { get; internal set; }
         public string Manufacturer { get; set; }
         public string Generic { get; set; }
+        public string Vendor { get; set; }
         //public string UOM { get; set; }
     }
 }

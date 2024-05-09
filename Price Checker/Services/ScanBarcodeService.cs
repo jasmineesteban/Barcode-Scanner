@@ -32,8 +32,8 @@ namespace Price_Checker.Services
                         // Set the size of priceForm to match
                         //priceForm.Size = scanPanel.Size;
 
-                        int offsetX = 235; // Adjust this value as needed
-                        int offsetY = 135;
+                        int offsetX = 230; // Adjust this value as needed
+                        int offsetY = 115;
 
                         // Manually adjust the location of priceForm
                         // For example, you can set it to a specific position relative to scanPanel
@@ -109,37 +109,37 @@ namespace Price_Checker.Services
 
         private bool IsBarcodeInDatabase(string barcode)
 {
-    bool barcodeExists = false;
+        bool barcodeExists = false;
 
-            _config = new DatabaseConfig();
-           string connString = $"server={_config.Server};port={_config.Port};uid={_config.Uid};pwd={_config.Pwd};database={_config.Database}";
+        _config = new DatabaseConfig();
+        string connString = $"server={_config.Server};port={_config.Port};uid={_config.Uid};pwd={_config.Pwd};database={_config.Database}";
 
             // SQL query (fixed)
-            string sql = "SELECT prod_itemcode FROM prod_verifier WHERE prod_barcode = @Barcode";
+        string sql = "SELECT prod_itemcode FROM prod_verifier WHERE prod_barcode = @Barcode";
 
-    try
-    {
-        using (MySqlConnection conn = new MySqlConnection(connString))
+        try
         {
-            conn.Open();
-            using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+            using (MySqlConnection conn = new MySqlConnection(connString))
             {
-                cmd.Parameters.AddWithValue("@Barcode", barcode);
-                using (MySqlDataReader reader = cmd.ExecuteReader())
+                conn.Open();
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    barcodeExists = reader.HasRows;
+                    cmd.Parameters.AddWithValue("@Barcode", barcode);
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        barcodeExists = reader.HasRows;
+                    }
                 }
             }
         }
-    }
-    catch (Exception ex)
-    {
-        // Handle the exception appropriately
-        Console.WriteLine("Error: " + ex.Message);
-    }
+        catch (Exception ex)
+        {
+            // Handle the exception appropriately
+            Console.WriteLine("Error: " + ex.Message);
+        }
 
-    return barcodeExists;
-}
+        return barcodeExists;
+        }
 
     }
 }
